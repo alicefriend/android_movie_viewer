@@ -23,12 +23,11 @@ public class RestApiHelper {
     private final static String TAG = RestApiHelper.class.getSimpleName();
 
     private final static String api_key_param = "api_key";
-    public final static String api_key = BuildConfig.API_KEY;
+    public final static String api_key = BuildConfig.THE_MOVIE_DB_API_TOKEN;
 
     public final static RestService service;
 
     static {
-
         Gson gson = new GsonBuilder().create();
         service = new Retrofit.Builder()
                 .baseUrl(BuildConfig.API_END_POINT)
@@ -44,6 +43,9 @@ public class RestApiHelper {
 
         @GET("movie/top_rated")
         Call<JsonObject> getMoviesByRating(@Query(api_key_param) String api_key);
+
+        @GET("movie/{sort}")
+        Call<JsonObject> getMovie(@Path("sort") String order, @Query(api_key_param) String key);
 
         @GET("movie/{movie_id}/reviews")
         Observable<JsonObject> getReviews(@Path("movie_id") String movie_id, @Query(api_key_param) String api_key);

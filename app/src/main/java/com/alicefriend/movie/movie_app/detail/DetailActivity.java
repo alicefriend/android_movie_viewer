@@ -4,6 +4,7 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,7 +40,14 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
         setContentView(R.layout.activity_detail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mMovie = (Movie)getIntent().getSerializableExtra("Movie");
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            if (extras.containsKey("Movie")) {
+                mMovie = (Movie)extras.getSerializable("Movie");
+            }
+        }
+
         mDetailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
         mDetailViewModel.init(mMovie);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
