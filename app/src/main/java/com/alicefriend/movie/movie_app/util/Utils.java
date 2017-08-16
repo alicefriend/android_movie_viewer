@@ -2,6 +2,7 @@ package com.alicefriend.movie.movie_app.util;
 
 import android.widget.ImageView;
 
+import com.alicefriend.movie.movie_app.R;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.bumptech.glide.Glide;
 
@@ -15,6 +16,7 @@ public class Utils {
         Glide.with(imageView.getContext())
                 .load(baseUrl + movie.getPosterPath())
                 .dontAnimate()
+                .placeholder(R.drawable.placeholder)
                 .fitCenter()
                 .into(imageView);
     }
