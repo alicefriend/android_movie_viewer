@@ -16,7 +16,7 @@
         android:layout_marginTop="8dp"
         android:maxLines="1"
         android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
+        android:textSize="@dimen/h4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
