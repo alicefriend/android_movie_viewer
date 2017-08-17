@@ -44,7 +44,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void loadData() {
-        RestApiHelper.service.getMoviesByPopular(RestApiHelper.api_key)
+        RestApiHelper.service.getMovie("popular", RestApiHelper.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -60,7 +60,7 @@ public class MainViewModel extends AndroidViewModel {
                     }
                 });
 
-        RestApiHelper.service.getMoviesByRating(RestApiHelper.api_key)
+        RestApiHelper.service.getMovie("top_rated",RestApiHelper.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

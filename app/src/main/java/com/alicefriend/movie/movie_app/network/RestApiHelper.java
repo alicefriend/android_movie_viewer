@@ -38,12 +38,6 @@ public class RestApiHelper {
     }
 
     public interface RestService {
-        @GET("movie/popular")
-        Call<JsonObject> getMoviesByPopular(@Query(api_key_param) String api_key);
-
-        @GET("movie/top_rated")
-        Call<JsonObject> getMoviesByRating(@Query(api_key_param) String api_key);
-
         @GET("movie/{sort}")
         Call<JsonObject> getMovie(@Path("sort") String order, @Query(api_key_param) String key);
 

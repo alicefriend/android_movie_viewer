@@ -5,11 +5,14 @@ import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
 
     Preference<String> orderPref;
 
+    private Menu menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mBinding.setViewModel(mainViewModel);
 
+        initAppBar();
         initRecyclerView();
         initPreferenceSetting();
 
@@ -67,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
+        this.menu = menu;
+        hideOption(R.id.action_info);
         return true;
     }
 
@@ -76,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+            return true;
+        } else if (id == R.id.action_info) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -87,8 +97,15 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     }
 
     private void initRecyclerView() {
-        final int num_column = 2;
+
+        int num_column;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            num_column = 4;
+        } else {
+            num_column = 2;
+        }
         mLayoutManager = new GridLayoutManager(this, num_column);
+
         mBinding.movieGridView.setLayoutManager(mLayoutManager);
         mBinding.movieGridView.setHasFixedSize(true);
     }
@@ -113,4 +130,39 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
             }
         });
     }
+
+    private void initAppBar() {
+        final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        AppBarLayout mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    isShow = true;
+                    showOption(R.id.action_info);
+                } else if (isShow) {
+                    isShow = false;
+                    hideOption(R.id.action_info);
+                }
+            }
+        });
+    }
+
+    private void hideOption(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(false);
+    }
+
+    private void showOption(int id) {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(true);
+    }
+
 }
