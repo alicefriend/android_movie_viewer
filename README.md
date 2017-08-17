@@ -2,7 +2,7 @@
 Movie review application for Android
 
 You should set API token Key to build this app.
-The field pathes are 'android.buildTypes.release.buildConfigField API_KEY', 'android.buildTypes.debug.buildConfigField API_KEY'
+store your key into the gradle.properties file. Then build.gradle file will reference the properties file and make key variable at runtime.
 You can get API Key from http://api.themoviedb.org/3/
 
 
