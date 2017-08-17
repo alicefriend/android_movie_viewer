@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">movie_app</string>
+    <string name="app_name">Movie Reviewer</string>
 
     <string name="action_settings">Settings</string>
 
@@ -115,4 +115,8 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="btn_favorite_label">Add</string>
+    <string name="label_overview">Overview</string>
+    <string name="label_trailers">Trailers</string>
+    <string name="label_reviews">Reviews</string>
 </resources>

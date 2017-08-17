@@ -12,6 +12,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -38,7 +39,6 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -54,6 +54,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
         mBinding.setMovie(mMovie);
         mBinding.setViewModel(mDetailViewModel);
 
+        initAppBar();
         initTrailerView();
         initReviewView();
 
@@ -107,6 +108,12 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
         mDetailViewModel.getRevies().observe(this, reviews -> reviewAdapter.setReviews(reviews));
         reviewView.setLayoutManager(new LinearLayoutManager(this));
         reviewView.setAdapter(reviewAdapter);
+    }
+
+    private void initAppBar() {
+        final Toolbar mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 }
