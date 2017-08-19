@@ -1,4 +1,4 @@
-package com.alicefriend.movie.movie_app.detail;
+package com.alicefriend.movie.movie_app.ui.detail;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

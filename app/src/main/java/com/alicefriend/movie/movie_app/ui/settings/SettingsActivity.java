@@ -1,4 +1,4 @@
-package com.alicefriend.movie.movie_app.settings;
+package com.alicefriend.movie.movie_app.ui.settings;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

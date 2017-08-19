@@ -1,4 +1,4 @@
-package com.alicefriend.movie.movie_app.main;
+package com.alicefriend.movie.movie_app.ui.main;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
@@ -20,7 +20,7 @@ import android.view.MenuItem;
 
 import com.alicefriend.movie.movie_app.R;
 import com.alicefriend.movie.movie_app.databinding.ActivityMainBinding;
-import com.alicefriend.movie.movie_app.settings.SettingsActivity;
+import com.alicefriend.movie.movie_app.ui.settings.SettingsActivity;
 import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.jakewharton.rxbinding2.view.RxView;

@@ -1,4 +1,4 @@
-package com.alicefriend.movie.movie_app.detail;
+package com.alicefriend.movie.movie_app.ui.detail;
 
 import com.alicefriend.movie.movie_app.domain.Movie;
 

@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="com.alicefriend.movie.movie_app.detail.DetailViewModel" />
+            type="com.alicefriend.movie.movie_app.ui.detail.DetailViewModel" />
 
         <variable
             name="movie"

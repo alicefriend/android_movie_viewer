@@ -1,4 +1,4 @@
-package com.alicefriend.movie.movie_app.detail;
+package com.alicefriend.movie.movie_app.ui.detail;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

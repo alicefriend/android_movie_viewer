@@ -1,4 +1,4 @@
-package com.alicefriend.movie.movie_app.main;
+package com.alicefriend.movie.movie_app.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.alicefriend.movie.movie_app.R;
-import com.alicefriend.movie.movie_app.detail.DetailActivity;
+import com.alicefriend.movie.movie_app.ui.detail.DetailActivity;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.util.Utils;
 

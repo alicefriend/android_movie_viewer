@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".main.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,20 +22,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".detail.DetailActivity"
-            android:parentActivityName="com.alicefriend.movie.movie_app.detail.DetailActivity"
+            android:name=".ui.detail.DetailActivity"
+            android:parentActivityName=".ui.detail.DetailActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.alicefriend.movie.movie_app.detail.DetailActivity" />
+                android:value=".ui.detail.DetailActivity" />
         </activity>
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName=".main.MainActivity">
+            android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.alicefriend.movie.movie_app.main.MainActivity" />
+                android:value=".ui.main.MainActivity" />
         </activity>
     </application>
 
