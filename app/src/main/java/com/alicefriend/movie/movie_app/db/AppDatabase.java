@@ -30,6 +30,6 @@ public abstract class AppDatabase extends RoomDatabase {
         INSTANCE = null;
     }
 
-    public abstract DAO appDomainModel();
+    public abstract MovieDao appDomainModel();
 
 }

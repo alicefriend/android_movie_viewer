@@ -16,8 +16,7 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
  */
 
 @Dao
-public interface DAO {
-
+public interface MovieDao {
     @Query("select * from Movie")
     LiveData<List<Movie>> getAllMovies();
 

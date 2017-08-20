@@ -7,19 +7,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableField;
 
 import com.alicefriend.movie.movie_app.db.AppDatabase;
+import com.alicefriend.movie.movie_app.db.MovieDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.network.RestService;
 import com.alicefriend.movie.movie_app.network.RestServiceFactory;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
-import java.util.Arrays;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by choi on 2017. 8. 5..
@@ -29,23 +22,38 @@ public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = MainViewModel.class.getSimpleName();
 
-    private AppDatabase appDatabase;
+    //private AppDatabase appDatabase;
 
-    private LiveData<List<Movie>> localMovies;
-    private MutableLiveData<List<Movie>> popularMovies = new MutableLiveData<>();
-    private MutableLiveData<List<Movie>> topRateMovies = new MutableLiveData<>();
-
+    private LiveData<List<Movie>> storedMovies;
+    private MutableLiveData<List<Movie>> popularMovies;
+    private MutableLiveData<List<Movie>> topRateMovies;
     private ObservableField<Boolean> hasNetworkError = new ObservableField<>(false);
+
+    private MainRepository repository;
 
     public MainViewModel(Application application) {
         super(application);
-        appDatabase = AppDatabase.getDatabase(this.getApplication());
-        localMovies = appDatabase.appDomainModel().getAllMovies();
-        loadData();
+
+
+        RestService restService = RestServiceFactory.getInstance();
+        MovieDao movieDao = AppDatabase.getDatabase(getApplication()).appDomainModel();
+        repository = new MainRepository(restService, movieDao);
+        init();
     }
 
-    public void loadData() {
-        RestServiceFactory.getInstance().getMovie("popular", RestService.api_key)
+
+    public void init() {
+        // Load data
+        popularMovies = repository.getMovies("popular");
+        topRateMovies = repository.getMovies("top_rated");
+        storedMovies = repository.getStoredMovie();
+
+        if (popularMovies.getValue() == null || topRateMovies.getValue() == null) {
+            hasNetworkError.set(true);
+        }
+
+        /*
+        RestServiceFactory.getInstance().getMovies("popular", RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -61,7 +69,7 @@ public class MainViewModel extends AndroidViewModel {
                     }
                 });
 
-        RestServiceFactory.getInstance().getMovie("top_rated", RestService.api_key)
+        RestServiceFactory.getInstance().getMovies("top_rated", RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -76,10 +84,11 @@ public class MainViewModel extends AndroidViewModel {
                         hasNetworkError.set(true);
                     }
                 });
+                */
     }
 
-    public LiveData<List<Movie>> getLocalMovies() {
-        return localMovies;
+    public LiveData<List<Movie>> getStoredMovies() {
+        return storedMovies;
     }
 
     public MutableLiveData<List<Movie>> getPopularMovies() {
