@@ -1,110 +1,47 @@
 package com.alicefriend.movie.movie_app.ui.detail;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.os.AsyncTask;
+import android.arch.lifecycle.ViewModel;
 
-import com.alicefriend.movie.movie_app.db.AppDatabase;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.domain.Review;
 import com.alicefriend.movie.movie_app.domain.Trailer;
-import com.alicefriend.movie.movie_app.network.RestApiHelper;
-import com.google.gson.Gson;
 
-import java.util.Arrays;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by choi on 2017. 8. 5..
  */
 
-public class DetailViewModel extends AndroidViewModel {
+public class DetailViewModel extends ViewModel {
 
     private static final String TAG = DetailViewModel.class.getSimpleName();
 
-    private AppDatabase appDatabase;
-
     private Movie movie;
-    private MutableLiveData<List<Review>> revies = new MutableLiveData<>();
+    private MutableLiveData<List<Review>> reviews = new MutableLiveData<>();
     private MutableLiveData<List<Trailer>> trailers = new MutableLiveData<>();
-
-    private Observable<List<Review>> reviewObservable;
-    private Observable<List<Trailer>> trailerObservable;
 
     private Boolean trailersLoadFailed;
     private Boolean reviewsLoadFailed;
 
-    public DetailViewModel(Application application) {
-        super(application);
-        appDatabase = AppDatabase.getDatabase(this.getApplication());
+    private DetailRepository detailRepository;
+
+
+    public DetailViewModel() {
     }
 
     public void init(Movie movie) {
         this.movie = movie;
+        List<Review> reviews = detailRepository.getReviewer().getValue();
+        List<Trailer> trailers = detailRepository.getTrailers().getValue();
 
-        Gson gson = new Gson();
-
-        reviewObservable = RestApiHelper.service.getReviews(movie.getId(), RestApiHelper.api_key)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(jObj -> jObj.get("results"))
-                .map(results -> gson.fromJson(results, Review[].class))
-                .map(reviewArr -> Arrays.asList(reviewArr));
-
-        trailerObservable = RestApiHelper.service.getTrailers(movie.getId(), RestApiHelper.api_key)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(jObj -> jObj.get("results"))
-                .map(trailers -> gson.fromJson(trailers, Trailer[].class))
-                .map(trailerArr -> Arrays.asList(trailerArr));
-
-        reviewObservable.subscribe(
-                reviews -> {
-                    revies.setValue(reviews);
-                    reviewsLoadFailed = false;
-                },
-                t -> reviewsLoadFailed = true);
-
-        trailerObservable.subscribe(
-                trailers -> {
-                    this.trailers.setValue(trailers);
-                    trailersLoadFailed = false;
-                },
-                t -> trailersLoadFailed = true);
     }
 
     public void insertMovie(final Movie movie) {
-        new addAsyncTask(appDatabase).execute(movie);
+        detailRepository.addFavoriteMovie(movie);
     }
 
-    private static class addAsyncTask extends AsyncTask<Movie, Void, Void> {
 
-        private AppDatabase db;
-
-        addAsyncTask(AppDatabase appDatabase) {
-            db = appDatabase;
-        }
-
-        @Override
-        protected Void doInBackground(final Movie... params) {
-            db.appDomainModel().insertMovie(params[0]);
-            return null;
-        }
-
-    }
-
-    public Observable<List<Review>> getReviewObservable() {
-        return reviewObservable;
-    }
-
-    public Observable<List<Trailer>> getTrailerObservable() {
-        return trailerObservable;
-    }
 
     public Boolean getTrailersLoadFailed() {
         return trailersLoadFailed;
@@ -114,8 +51,8 @@ public class DetailViewModel extends AndroidViewModel {
         return reviewsLoadFailed;
     }
 
-    public MutableLiveData<List<Review>> getRevies() {
-        return revies;
+    public MutableLiveData<List<Review>> getReviews() {
+        return reviews;
     }
 
     public MutableLiveData<List<Trailer>> getTrailers() {

@@ -83,13 +83,6 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
     private void initTrailerView() {
         RecyclerView trailerView = mBinding.trailerList;
         TrailerAdapter trailerAdapter = new TrailerAdapter();
-        mDetailViewModel.getTrailerObservable()
-                .subscribe(
-                        trailers -> {
-                            trailerAdapter.setTrailers(trailers);
-                            mDetailViewModel.setTrailersLoadFailed(false);
-                        },
-                        t ->mDetailViewModel.setTrailersLoadFailed(true));
         mDetailViewModel.getTrailers().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
         trailerView.setLayoutManager(new LinearLayoutManager(this));
         trailerView.setAdapter(trailerAdapter);
@@ -98,14 +91,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
     private void initReviewView() {
         RecyclerView reviewView = mBinding.reviewList;
         ReviewAdapter reviewAdapter = new ReviewAdapter();
-        mDetailViewModel.getReviewObservable()
-                .subscribe(
-                        reviews -> {
-                            reviewAdapter.setReviews(reviews);
-                            mDetailViewModel.setReviewsLoadFailed(false);
-                        },
-                        t ->mDetailViewModel.setReviewsLoadFailed(true));
-        mDetailViewModel.getRevies().observe(this, reviews -> reviewAdapter.setReviews(reviews));
+        mDetailViewModel.getReviews().observe(this, reviews -> reviewAdapter.setReviews(reviews));
         reviewView.setLayoutManager(new LinearLayoutManager(this));
         reviewView.setAdapter(reviewAdapter);
     }

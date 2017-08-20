@@ -1,91 +1,52 @@
 package com.alicefriend.movie.movie_app.ui.main;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableField;
 
-import com.alicefriend.movie.movie_app.db.AppDatabase;
 import com.alicefriend.movie.movie_app.domain.Movie;
-import com.alicefriend.movie.movie_app.network.RestApiHelper;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
-import java.util.Arrays;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import javax.inject.Inject;
 
 /**
  * Created by choi on 2017. 8. 5..
  */
 
-public class MainViewModel extends AndroidViewModel {
+public class MainViewModel extends ViewModel {
 
     private static final String TAG = MainViewModel.class.getSimpleName();
 
-    private AppDatabase appDatabase;
+
+    private MovieRepository movieRepo;
 
     private LiveData<List<Movie>> localMovies;
-    private MutableLiveData<List<Movie>> popularMovies = new MutableLiveData<>();
-    private MutableLiveData<List<Movie>> topRateMovies = new MutableLiveData<>();
-
+    private LiveData<List<Movie>> popularMovies;
+    private LiveData<List<Movie>> topRateMovies;
     private ObservableField<Boolean> hasNetworkError = new ObservableField<>(false);
 
-    public MainViewModel(Application application) {
-        super(application);
-        appDatabase = AppDatabase.getDatabase(this.getApplication());
-        localMovies = appDatabase.appDomainModel().getAllMovies();
-        loadData();
+    @Inject
+    public MainViewModel(MovieRepository movieRepo) {
+        this.movieRepo = movieRepo;
+        init();
     }
 
-    public void loadData() {
-        RestApiHelper.service.getMovie("popular", RestApiHelper.api_key)
-                .enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        JsonElement results = response.body().get("results");
-                        List<Movie> movies = Arrays.asList(new Gson().fromJson(results, Movie[].class));
-                        popularMovies.setValue(movies);
-                        hasNetworkError.set(false);
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        hasNetworkError.set(true);
-                    }
-                });
-
-        RestApiHelper.service.getMovie("top_rated",RestApiHelper.api_key)
-                .enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        JsonElement results = response.body().get("results");
-                        List<Movie> movies = Arrays.asList(new Gson().fromJson(results, Movie[].class));
-                        topRateMovies.setValue(movies);
-                        hasNetworkError.set(false);
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        hasNetworkError.set(true);
-                    }
-                });
+    public void init() {
+        localMovies = movieRepo.loadFavoriteMovie();
+        popularMovies = movieRepo.loadMoviesData("popular");
+        topRateMovies = movieRepo.loadMoviesData("top_rated");
     }
 
     public LiveData<List<Movie>> getLocalMovies() {
         return localMovies;
     }
 
-    public MutableLiveData<List<Movie>> getPopularMovies() {
+    public LiveData<List<Movie>> getPopularMovies() {
         return popularMovies;
     }
 
-    public MutableLiveData<List<Movie>> getTopRateMovies() {
+    public LiveData<List<Movie>> getTopRateMovies() {
         return topRateMovies;
     }
 

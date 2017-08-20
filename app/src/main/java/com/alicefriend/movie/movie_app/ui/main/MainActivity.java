@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         RxView.clicks(mBinding.refresh)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .subscribe(ignored -> mainViewModel.loadData());
+                .subscribe(ignored -> mainViewModel.init());
     }
 
     @Override
