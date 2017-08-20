@@ -9,7 +9,8 @@ import com.alicefriend.movie.movie_app.db.AppDatabase;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.domain.Review;
 import com.alicefriend.movie.movie_app.domain.Trailer;
-import com.alicefriend.movie.movie_app.network.RestApiHelper;
+import com.alicefriend.movie.movie_app.network.RestService;
+import com.alicefriend.movie.movie_app.network.RestServiceFactory;
 import com.google.gson.Gson;
 
 import java.util.Arrays;
@@ -49,14 +50,14 @@ public class DetailViewModel extends AndroidViewModel {
 
         Gson gson = new Gson();
 
-        reviewObservable = RestApiHelper.service.getReviews(movie.getId(), RestApiHelper.api_key)
+        reviewObservable = RestServiceFactory.getInstance().getReviews(movie.getId(), RestService.api_key)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(jObj -> jObj.get("results"))
                 .map(results -> gson.fromJson(results, Review[].class))
                 .map(reviewArr -> Arrays.asList(reviewArr));
 
-        trailerObservable = RestApiHelper.service.getTrailers(movie.getId(), RestApiHelper.api_key)
+        trailerObservable = RestServiceFactory.getInstance().getTrailers(movie.getId(), RestService.api_key)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(jObj -> jObj.get("results"))

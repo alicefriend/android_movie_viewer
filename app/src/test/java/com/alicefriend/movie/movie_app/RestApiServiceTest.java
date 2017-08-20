@@ -7,7 +7,7 @@ import org.junit.Test;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class RestApiHelperTest {
+public class RestApiServiceTest {
 
     @Test
     public void a() throws Exception{

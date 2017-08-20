@@ -8,7 +8,8 @@ import android.databinding.ObservableField;
 
 import com.alicefriend.movie.movie_app.db.AppDatabase;
 import com.alicefriend.movie.movie_app.domain.Movie;
-import com.alicefriend.movie.movie_app.network.RestApiHelper;
+import com.alicefriend.movie.movie_app.network.RestService;
+import com.alicefriend.movie.movie_app.network.RestServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -44,7 +45,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void loadData() {
-        RestApiHelper.service.getMovie("popular", RestApiHelper.api_key)
+        RestServiceFactory.getInstance().getMovie("popular", RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -60,7 +61,7 @@ public class MainViewModel extends AndroidViewModel {
                     }
                 });
 
-        RestApiHelper.service.getMovie("top_rated",RestApiHelper.api_key)
+        RestServiceFactory.getInstance().getMovie("top_rated", RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
