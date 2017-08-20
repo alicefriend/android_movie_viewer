@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.alicefriend.movie.movie_app.db.AppDatabase;
 import com.alicefriend.movie.movie_app.domain.Movie;
@@ -12,13 +13,16 @@ import com.alicefriend.movie.movie_app.domain.Trailer;
 import com.alicefriend.movie.movie_app.network.RestService;
 import com.alicefriend.movie.movie_app.network.RestServiceFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by choi on 2017. 8. 5..
@@ -31,52 +35,54 @@ public class DetailViewModel extends AndroidViewModel {
     private AppDatabase appDatabase;
 
     private Movie movie;
-    private MutableLiveData<List<Review>> revies = new MutableLiveData<>();
-    private MutableLiveData<List<Trailer>> trailers = new MutableLiveData<>();
+    private MutableLiveData<List<Review>> reviews;
+    private MutableLiveData<List<Trailer>> trailers;
 
-    private Observable<List<Review>> reviewObservable;
-    private Observable<List<Trailer>> trailerObservable;
+    Observable<List<Review>> reviewsObservable;
 
     private Boolean trailersLoadFailed;
     private Boolean reviewsLoadFailed;
 
-    public DetailViewModel(Application application) {
+    public DetailViewModel(Application application, Movie movie) {
         super(application);
-        appDatabase = AppDatabase.getDatabase(this.getApplication());
-    }
-
-    public void init(Movie movie) {
         this.movie = movie;
 
-        Gson gson = new Gson();
+        reviews = new MutableLiveData<>();
+        trailers = new MutableLiveData<>();
 
-        reviewObservable = RestServiceFactory.getInstance().getReviews(movie.getId(), RestService.api_key)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(jObj -> jObj.get("results"))
-                .map(results -> gson.fromJson(results, Review[].class))
-                .map(reviewArr -> Arrays.asList(reviewArr));
 
-        trailerObservable = RestServiceFactory.getInstance().getTrailers(movie.getId(), RestService.api_key)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(jObj -> jObj.get("results"))
-                .map(trailers -> gson.fromJson(trailers, Trailer[].class))
-                .map(trailerArr -> Arrays.asList(trailerArr));
+        RestServiceFactory.getInstance().getReviews(movie.getId(), RestService.api_key)
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        JsonElement results = response.body().get("results");
+                        Log.d(TAG, "onResponse: " + results.toString());
+                        List<Review> reviewList = Arrays.asList(new Gson().fromJson(results, Review[].class));
+                        reviewsObservable = Observable.just(reviewList);
+                        reviews.setValue(reviewList);
+                    }
 
-        reviewObservable.subscribe(
-                reviews -> {
-                    revies.setValue(reviews);
-                    reviewsLoadFailed = false;
-                },
-                t -> reviewsLoadFailed = true);
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(TAG, "onFailure: reviews");
+                    }
+                });
 
-        trailerObservable.subscribe(
-                trailers -> {
-                    this.trailers.setValue(trailers);
-                    trailersLoadFailed = false;
-                },
-                t -> trailersLoadFailed = true);
+        RestServiceFactory.getInstance().getTrailers(movie.getId(), RestService.api_key)
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        JsonElement results = response.body().get("results");
+                        Log.d(TAG, "onResponse: " + results.toString());
+                        List<Trailer> trailerList = Arrays.asList(new Gson().fromJson(results, Trailer[].class));
+                        trailers.setValue(trailerList);
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                        Log.d(TAG, "onFailure: trailers");
+                    }
+                });
     }
 
     public void insertMovie(final Movie movie) {
@@ -99,14 +105,6 @@ public class DetailViewModel extends AndroidViewModel {
 
     }
 
-    public Observable<List<Review>> getReviewObservable() {
-        return reviewObservable;
-    }
-
-    public Observable<List<Trailer>> getTrailerObservable() {
-        return trailerObservable;
-    }
-
     public Boolean getTrailersLoadFailed() {
         return trailersLoadFailed;
     }
@@ -115,19 +113,12 @@ public class DetailViewModel extends AndroidViewModel {
         return reviewsLoadFailed;
     }
 
-    public MutableLiveData<List<Review>> getRevies() {
-        return revies;
+    public MutableLiveData<List<Review>> getReviews() {
+        return reviews;
     }
 
     public MutableLiveData<List<Trailer>> getTrailers() {
         return trailers;
     }
 
-    public void setTrailersLoadFailed(Boolean trailersLoadFailed) {
-        this.trailersLoadFailed = trailersLoadFailed;
-    }
-
-    public void setReviewsLoadFailed(Boolean reviewsLoadFailed) {
-        this.reviewsLoadFailed = reviewsLoadFailed;
-    }
 }

@@ -3,6 +3,7 @@ package com.alicefriend.movie.movie_app.ui.detail;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import com.alicefriend.movie.movie_app.R;
 import com.alicefriend.movie.movie_app.domain.Trailer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,10 +22,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     private static final String TAG = TrailerAdapter.class.getSimpleName();
 
-    private List<Trailer> trailers = new ArrayList<>();
+    private List<Trailer> trailers;
 
     public void setTrailers(List<Trailer> trailers) {
         this.trailers = trailers;
+        Log.d(TAG, "setTrailers: " + trailers.size());
         notifyDataSetChanged();
     }
 

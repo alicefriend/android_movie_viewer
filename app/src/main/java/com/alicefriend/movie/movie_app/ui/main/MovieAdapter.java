@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.alicefriend.movie.movie_app.R;
-import com.alicefriend.movie.movie_app.ui.detail.DetailActivity;
 import com.alicefriend.movie.movie_app.domain.Movie;
+import com.alicefriend.movie.movie_app.ui.detail.DetailActivity;
 import com.alicefriend.movie.movie_app.util.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
-    private List<Movie> movies = new ArrayList<Movie>();
+    private List<Movie> movies;
 
     @Override
     public int getItemCount() {

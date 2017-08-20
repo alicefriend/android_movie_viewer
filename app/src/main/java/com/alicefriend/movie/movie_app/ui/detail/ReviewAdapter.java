@@ -1,6 +1,7 @@
 package com.alicefriend.movie.movie_app.ui.detail;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,6 @@ import android.widget.TextView;
 import com.alicefriend.movie.movie_app.R;
 import com.alicefriend.movie.movie_app.domain.Review;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,12 +20,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
 
     private static final String TAG = ReviewAdapter.class.getSimpleName();
 
+    private List<Review> reviews;
+
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+        Log.d(TAG, "setReviews: " +reviews.size());
         notifyDataSetChanged();
     }
-
-    private List<Review> reviews = new ArrayList<>();
 
     @Override
     public int getItemCount() {

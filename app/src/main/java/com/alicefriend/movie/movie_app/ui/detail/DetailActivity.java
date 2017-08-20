@@ -1,8 +1,8 @@
 package com.alicefriend.movie.movie_app.ui.detail;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -25,7 +26,7 @@ import com.alicefriend.movie.movie_app.util.Utils;
  * Created by choi on 2017. 8. 1..
  */
 
-public class DetailActivity extends AppCompatActivity implements LifecycleOwner {
+public class DetailActivity extends AppCompatActivity implements LifecycleRegistryOwner {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
 
@@ -34,6 +35,12 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
     private Movie mMovie;
     private ActivityDetailBinding mBinding;
     private DetailViewModel mDetailViewModel;
+
+    TrailerAdapter trailerAdapter;
+    ReviewAdapter reviewAdapter;
+
+    RecyclerView trailerView;
+    RecyclerView reviewView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,15 +55,32 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
             }
         }
 
-        mDetailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
-        mDetailViewModel.init(mMovie);
+        ViewModelProvider.Factory factory = new DetailViewModelFactory(getApplication(), mMovie);
+        mDetailViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         mBinding.setMovie(mMovie);
         mBinding.setViewModel(mDetailViewModel);
 
         initAppBar();
-        initTrailerView();
-        initReviewView();
+
+        trailerView = mBinding.trailerList;
+        trailerAdapter = new TrailerAdapter();
+        mDetailViewModel.getTrailers().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
+        trailerView.setLayoutManager(new LinearLayoutManager(this));
+        trailerView.setAdapter(trailerAdapter);
+
+        Log.d(TAG, "onCreate: trailer observer " + mDetailViewModel.getTrailers().hasObservers());
+        Log.d(TAG, "onCreate: trailer active observer " + mDetailViewModel.getTrailers().hasActiveObservers());
+
+        reviewView = mBinding.reviewList;
+        reviewAdapter = new ReviewAdapter();
+        mDetailViewModel.getReviews().observe(this, reviews -> reviewAdapter.setReviews(reviews));
+        reviewView.setLayoutManager(new LinearLayoutManager(this));
+        reviewView.setAdapter(reviewAdapter);
+
+        Log.d(TAG, "onCreate: review observer " + mDetailViewModel.getReviews().hasObservers());
+        Log.d(TAG, "onCreate: review active observer " + mDetailViewModel.getReviews().hasActiveObservers());
 
         Utils.posterImageLoad(mBinding.thumnail, mMovie);
         mBinding.favoriteButton.setOnClickListener(view -> {
@@ -75,39 +99,13 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public Lifecycle getLifecycle() {
-        return mRegistry;
-    }
 
     private void initTrailerView() {
-        RecyclerView trailerView = mBinding.trailerList;
-        TrailerAdapter trailerAdapter = new TrailerAdapter();
-        mDetailViewModel.getTrailerObservable()
-                .subscribe(
-                        trailers -> {
-                            trailerAdapter.setTrailers(trailers);
-                            mDetailViewModel.setTrailersLoadFailed(false);
-                        },
-                        t ->mDetailViewModel.setTrailersLoadFailed(true));
-        mDetailViewModel.getTrailers().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
-        trailerView.setLayoutManager(new LinearLayoutManager(this));
-        trailerView.setAdapter(trailerAdapter);
+
     }
 
     private void initReviewView() {
-        RecyclerView reviewView = mBinding.reviewList;
-        ReviewAdapter reviewAdapter = new ReviewAdapter();
-        mDetailViewModel.getReviewObservable()
-                .subscribe(
-                        reviews -> {
-                            reviewAdapter.setReviews(reviews);
-                            mDetailViewModel.setReviewsLoadFailed(false);
-                        },
-                        t ->mDetailViewModel.setReviewsLoadFailed(true));
-        mDetailViewModel.getRevies().observe(this, reviews -> reviewAdapter.setReviews(reviews));
-        reviewView.setLayoutManager(new LinearLayoutManager(this));
-        reviewView.setAdapter(reviewAdapter);
+
     }
 
     private void initAppBar() {
@@ -116,4 +114,8 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public LifecycleRegistry getLifecycle() {
+        return mRegistry;
+    }
 }

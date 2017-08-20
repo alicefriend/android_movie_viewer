@@ -48,43 +48,11 @@ public class MainViewModel extends AndroidViewModel {
         topRateMovies = repository.getMovies("top_rated");
         storedMovies = repository.getStoredMovie();
 
+        /*
         if (popularMovies.getValue() == null || topRateMovies.getValue() == null) {
             hasNetworkError.set(true);
         }
-
-        /*
-        RestServiceFactory.getInstance().getMovies("popular", RestService.api_key)
-                .enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        JsonElement results = response.body().get("results");
-                        List<Movie> movies = Arrays.asList(new Gson().fromJson(results, Movie[].class));
-                        popularMovies.setValue(movies);
-                        hasNetworkError.set(false);
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        hasNetworkError.set(true);
-                    }
-                });
-
-        RestServiceFactory.getInstance().getMovies("top_rated", RestService.api_key)
-                .enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        JsonElement results = response.body().get("results");
-                        List<Movie> movies = Arrays.asList(new Gson().fromJson(results, Movie[].class));
-                        topRateMovies.setValue(movies);
-                        hasNetworkError.set(false);
-                    }
-
-                    @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        hasNetworkError.set(true);
-                    }
-                });
-                */
+        */
     }
 
     public LiveData<List<Movie>> getStoredMovies() {
