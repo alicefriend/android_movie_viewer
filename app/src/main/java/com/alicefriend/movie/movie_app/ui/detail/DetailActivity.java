@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -32,59 +31,38 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
 
     private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
 
-    private Movie mMovie;
-    private ActivityDetailBinding mBinding;
-    private DetailViewModel mDetailViewModel;
+    private Movie movie;
+    private ActivityDetailBinding binding;
+    private DetailViewModel detailViewModel;
 
-    TrailerAdapter trailerAdapter;
-    ReviewAdapter reviewAdapter;
 
-    RecyclerView trailerView;
-    RecyclerView reviewView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
             if (extras.containsKey("Movie")) {
-                mMovie = (Movie)extras.getSerializable("Movie");
+                movie = (Movie)extras.getSerializable("Movie");
             }
         }
 
-        ViewModelProvider.Factory factory = new DetailViewModelFactory(getApplication(), mMovie);
-        mDetailViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+        ViewModelProvider.Factory factory = new DetailViewModelFactory(getApplication(), movie);
+        detailViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
-        mBinding.setMovie(mMovie);
-        mBinding.setViewModel(mDetailViewModel);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
+        binding.setMovie(movie);
+        binding.setViewModel(detailViewModel);
 
         initAppBar();
+        initTrailerView();
+        initReviewView();
 
-        trailerView = mBinding.trailerList;
-        trailerAdapter = new TrailerAdapter();
-        mDetailViewModel.getTrailers().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
-        trailerView.setLayoutManager(new LinearLayoutManager(this));
-        trailerView.setAdapter(trailerAdapter);
-
-        Log.d(TAG, "onCreate: trailer observer " + mDetailViewModel.getTrailers().hasObservers());
-        Log.d(TAG, "onCreate: trailer active observer " + mDetailViewModel.getTrailers().hasActiveObservers());
-
-        reviewView = mBinding.reviewList;
-        reviewAdapter = new ReviewAdapter();
-        mDetailViewModel.getReviews().observe(this, reviews -> reviewAdapter.setReviews(reviews));
-        reviewView.setLayoutManager(new LinearLayoutManager(this));
-        reviewView.setAdapter(reviewAdapter);
-
-        Log.d(TAG, "onCreate: review observer " + mDetailViewModel.getReviews().hasObservers());
-        Log.d(TAG, "onCreate: review active observer " + mDetailViewModel.getReviews().hasActiveObservers());
-
-        Utils.posterImageLoad(mBinding.thumnail, mMovie);
-        mBinding.favoriteButton.setOnClickListener(view -> {
-            mDetailViewModel.insertMovie(mMovie);
+        Utils.posterImageLoad(binding.thumnail, movie);
+        binding.favoriteButton.setOnClickListener(view -> {
+            detailViewModel.insertMovie(movie);
             Toast.makeText(this, "Added to Favorite", Toast.LENGTH_SHORT).show();
         });
     }
@@ -101,10 +79,21 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
 
 
     private void initTrailerView() {
-
+        RecyclerView trailerView;
+        trailerView = binding.trailerList;
+        TrailerAdapter trailerAdapter = new TrailerAdapter();
+        detailViewModel.getTrailers().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
+        trailerView.setLayoutManager(new LinearLayoutManager(this));
+        trailerView.setAdapter(trailerAdapter);
     }
 
     private void initReviewView() {
+        RecyclerView reviewView;
+        reviewView = binding.reviewList;
+        ReviewAdapter reviewAdapter = new ReviewAdapter();
+        detailViewModel.getReviews().observe(this, reviews -> reviewAdapter.setReviews(reviews));
+        reviewView.setLayoutManager(new LinearLayoutManager(this));
+        reviewView.setAdapter(reviewAdapter);
 
     }
 

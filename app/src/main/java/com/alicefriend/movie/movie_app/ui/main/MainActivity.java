@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     private static final String TAG = MainActivity.class.getSimpleName();
     private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
 
-    private ActivityMainBinding mBinding;
+    private ActivityMainBinding binding;
     private MainViewModel mainViewModel;
 
     private MovieAdapter mPopularAdapter = new MovieAdapter();
@@ -49,11 +49,10 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mBinding.setViewModel(mainViewModel);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setViewModel(mainViewModel);
 
         initAppBar();
         initRecyclerView();
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         mainViewModel.getPopularMovies().observe(this, movies -> mPopularAdapter.setMovies(movies));
         mainViewModel.getTopRateMovies().observe(this, movies -> mTopRateAdapter.setMovies(movies));
 
-        RxView.clicks(mBinding.refresh)
+        RxView.clicks(binding.refresh)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .subscribe(ignored -> mainViewModel.init());
@@ -106,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         }
         mLayoutManager = new GridLayoutManager(this, num_column);
 
-        mBinding.movieGridView.setLayoutManager(mLayoutManager);
-        mBinding.movieGridView.setHasFixedSize(true);
+        binding.movieGridView.setLayoutManager(mLayoutManager);
+        binding.movieGridView.setHasFixedSize(true);
     }
 
     private void initPreferenceSetting() {
@@ -120,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
             final String favorite = getString(R.string.pref_order_favorite_value);
 
             if (order.equals(popular)) {
-                mBinding.movieGridView.setAdapter(mPopularAdapter);
+                binding.movieGridView.setAdapter(mPopularAdapter);
             } else if (order.equals(topRate)) {
-                mBinding.movieGridView.setAdapter(mTopRateAdapter);
+                binding.movieGridView.setAdapter(mTopRateAdapter);
             } else if (order.equals(favorite)) {
-                mBinding.movieGridView.setAdapter(mFavoriteAdapter);
+                binding.movieGridView.setAdapter(mFavoriteAdapter);
             } else {
                 Log.d(TAG, "initPreferenceSetting: " + "'orderBy' doesn't match.");
             }
