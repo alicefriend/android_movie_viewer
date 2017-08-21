@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
 
     private Movie movie;
     private ActivityDetailBinding binding;
-    private DetailViewModel detailViewModel;
+    private DetailViewModel viewModel;
 
 
 
@@ -50,11 +52,11 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         }
 
         ViewModelProvider.Factory factory = new DetailViewModelFactory(getApplication(), movie);
-        detailViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+        viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         binding.setMovie(movie);
-        binding.setViewModel(detailViewModel);
+        binding.setViewModel(viewModel);
 
         initAppBar();
         initTrailerView();
@@ -62,9 +64,16 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
 
         Utils.posterImageLoad(binding.thumnail, movie);
         binding.favoriteButton.setOnClickListener(view -> {
-            detailViewModel.insertMovie(movie);
+            viewModel.insertMovie(movie);
             Toast.makeText(this, "Added to Favorite", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.detail, menu);
+        return true;
     }
 
     @Override
@@ -73,6 +82,8 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
+            case R.id.action_refresh:
+                viewModel.loadData();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -82,7 +93,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         RecyclerView trailerView;
         trailerView = binding.trailerList;
         TrailerAdapter trailerAdapter = new TrailerAdapter();
-        detailViewModel.getTrailersLiveData().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
+        viewModel.getTrailersLiveData().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
         trailerView.setLayoutManager(new LinearLayoutManager(this));
         trailerView.setAdapter(trailerAdapter);
     }
@@ -91,7 +102,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         RecyclerView reviewView;
         reviewView = binding.reviewList;
         ReviewAdapter reviewAdapter = new ReviewAdapter();
-        detailViewModel.getReviewsLiveData().observe(this, reviews -> reviewAdapter.setReviews(reviews));
+        viewModel.getReviewsLiveData().observe(this, reviews -> reviewAdapter.setReviews(reviews));
         reviewView.setLayoutManager(new LinearLayoutManager(this));
         reviewView.setAdapter(reviewAdapter);
 

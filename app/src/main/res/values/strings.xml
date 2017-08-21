@@ -121,4 +121,5 @@
     <string name="label_reviews">Reviews</string>
     <string name="error_msg_load_reviews">Error occured, Check network.</string>
     <string name="error_msg_load_trailers">Error occured, Check network.</string>
+    <string name="action_refresh">refresh</string>
 </resources>

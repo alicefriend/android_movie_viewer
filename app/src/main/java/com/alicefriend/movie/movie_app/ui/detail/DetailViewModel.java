@@ -35,6 +35,10 @@ public class DetailViewModel extends AndroidViewModel {
         this.movie = movie;
         this.application = application;
         repository = new DetailRepository(movie);
+        loadData();
+    }
+
+    public void loadData() {
         repository.reviews(reviewsLiveData, loadReviewsFailed);
         repository.trailers(trailersLiveData, loadTrailersFailed);
     }
