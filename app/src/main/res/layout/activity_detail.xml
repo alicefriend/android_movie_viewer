@@ -243,8 +243,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_centerVertical="true"
-                                android:text="Error occured, Check netwrok."
-                                android:visibility="@{viewModel.trailersLoadFailed ? View.VISIBLE : View.GONE}" />
+                                android:text="@string/error_msg_load_trailers"
+                                android:visibility="@{viewModel.loadTrailersFailed ? View.VISIBLE : View.GONE}" />
                         </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
@@ -297,8 +297,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
                                 android:layout_centerVertical="true"
-                                android:text="Error occured, Check netwrok."
-                                android:visibility="@{viewModel.reviewsLoadFailed ? View.VISIBLE : View.GONE}" />
+                                android:text="@string/error_msg_load_reviews"
+                                android:visibility="@{viewModel.loadReviewsFailed ? View.VISIBLE : View.GONE}" />
                         </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>

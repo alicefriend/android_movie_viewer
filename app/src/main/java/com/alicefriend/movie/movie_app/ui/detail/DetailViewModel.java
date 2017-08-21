@@ -3,6 +3,7 @@ package com.alicefriend.movie.movie_app.ui.detail;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
+import android.databinding.ObservableField;
 import android.os.AsyncTask;
 
 import com.alicefriend.movie.movie_app.db.AppDatabase;
@@ -21,23 +22,21 @@ public class DetailViewModel extends AndroidViewModel {
     private static final String TAG = DetailViewModel.class.getSimpleName();
 
     private DetailRepository repository;
-    private Movie movie;
-    private MutableLiveData<List<Review>> reviews;
-    private MutableLiveData<List<Trailer>> trailers;
-
-
     private Application application;
-    private Boolean trailersLoadFailed;
-    private Boolean reviewsLoadFailed;
+
+    private Movie movie;
+    private MutableLiveData<List<Review>> reviewsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<Trailer>> trailersLiveData = new MutableLiveData<>();
+    private ObservableField<Boolean> loadTrailersFailed = new ObservableField<>(false);
+    private ObservableField<Boolean> loadReviewsFailed = new ObservableField<>(false);
 
     public DetailViewModel(Application application, Movie movie) {
         super(application);
         this.movie = movie;
         this.application = application;
-
         repository = new DetailRepository(movie);
-        reviews = repository.getReviewsLiveData();
-        trailers = repository.getTrailersLiveData();
+        repository.reviews(reviewsLiveData, loadReviewsFailed);
+        repository.trailers(trailersLiveData, loadTrailersFailed);
     }
 
     public void insertMovie(final Movie movie) {
@@ -57,23 +56,21 @@ public class DetailViewModel extends AndroidViewModel {
             db.appDomainModel().insertMovie(params[0]);
             return null;
         }
-
     }
 
-    public Boolean getTrailersLoadFailed() {
-        return trailersLoadFailed;
+    public MutableLiveData<List<Review>> getReviewsLiveData() {
+        return reviewsLiveData;
     }
 
-    public Boolean getReviewsLoadFailed() {
-        return reviewsLoadFailed;
+    public MutableLiveData<List<Trailer>> getTrailersLiveData() {
+        return trailersLiveData;
     }
 
-    public MutableLiveData<List<Review>> getReviews() {
-        return reviews;
+    public ObservableField<Boolean> getLoadTrailersFailed() {
+        return loadTrailersFailed;
     }
 
-    public MutableLiveData<List<Trailer>> getTrailers() {
-        return trailers;
+    public ObservableField<Boolean> getLoadReviewsFailed() {
+        return loadReviewsFailed;
     }
-
 }

@@ -82,7 +82,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         RecyclerView trailerView;
         trailerView = binding.trailerList;
         TrailerAdapter trailerAdapter = new TrailerAdapter();
-        detailViewModel.getTrailers().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
+        detailViewModel.getTrailersLiveData().observe(this, trailers -> trailerAdapter.setTrailers(trailers));
         trailerView.setLayoutManager(new LinearLayoutManager(this));
         trailerView.setAdapter(trailerAdapter);
     }
@@ -91,7 +91,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         RecyclerView reviewView;
         reviewView = binding.reviewList;
         ReviewAdapter reviewAdapter = new ReviewAdapter();
-        detailViewModel.getReviews().observe(this, reviews -> reviewAdapter.setReviews(reviews));
+        detailViewModel.getReviewsLiveData().observe(this, reviews -> reviewAdapter.setReviews(reviews));
         reviewView.setLayoutManager(new LinearLayoutManager(this));
         reviewView.setAdapter(reviewAdapter);
 

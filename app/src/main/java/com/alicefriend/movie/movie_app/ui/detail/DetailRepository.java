@@ -1,6 +1,7 @@
 package com.alicefriend.movie.movie_app.ui.detail;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.databinding.ObservableField;
 
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.domain.Review;
@@ -30,8 +31,7 @@ public class DetailRepository {
         this.movie = movie;
     }
 
-    public MutableLiveData<List<Review>> getReviewsLiveData() {
-        MutableLiveData<List<Review>> reviewsLiveData = new MutableLiveData<>();
+    public void reviews(MutableLiveData<List<Review>> reviewsLiveData, ObservableField<Boolean> loadFailed) {
         RestServiceFactory.getInstance().getReviews(movie.getId(), RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
@@ -43,14 +43,12 @@ public class DetailRepository {
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
-                        reviewsLiveData.setValue(null);
+                        loadFailed.set(true);
                     }
                 });
-        return reviewsLiveData;
     }
 
-    public MutableLiveData<List<Trailer>> getTrailersLiveData() {
-        MutableLiveData<List<Trailer>> trailersLiveData = new MutableLiveData<>();
+    public void trailers(MutableLiveData<List<Trailer>> trailersLiveData, ObservableField<Boolean> loadFailed) {
         RestServiceFactory.getInstance().getTrailers(movie.getId(), RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
@@ -62,9 +60,8 @@ public class DetailRepository {
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
-                        trailersLiveData.setValue(null);
+                        loadFailed.set(true);
                     }
                 });
-        return trailersLiveData;
     }
 }

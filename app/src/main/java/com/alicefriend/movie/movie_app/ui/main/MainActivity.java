@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
 
         mainViewModel.getStoredMovies().observe(this, movies -> mFavoriteAdapter.setMovies(movies));
         mainViewModel.getPopularMovies().observe(this, movies -> mPopularAdapter.setMovies(movies));
-        mainViewModel.getTopRateMovies().observe(this, movies -> mTopRateAdapter.setMovies(movies));
+        mainViewModel.getTopRatedMovies().observe(this, movies -> mTopRateAdapter.setMovies(movies));
 
         RxView.clicks(binding.refresh)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .subscribe(ignored -> mainViewModel.init());
+                .subscribe(ignored -> mainViewModel.initModelData());
     }
 
     @Override

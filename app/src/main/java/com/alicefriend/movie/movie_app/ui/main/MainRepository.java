@@ -2,6 +2,7 @@ package com.alicefriend.movie.movie_app.ui.main;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.databinding.ObservableField;
 
 import com.alicefriend.movie.movie_app.db.MovieDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
@@ -31,24 +32,23 @@ public class MainRepository {
         this.dao = dao;
     }
 
-    public MutableLiveData<List<Movie>> getMovies(String criteria) {
-        MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
-
+    public void getMovies(String criteria, MutableLiveData<List<Movie>> liveData,
+                          ObservableField<Boolean> isFailed) {
         service.getMovie(criteria, RestService.api_key)
                 .enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         JsonElement results = response.body().get("results");
                         List<Movie> movieList = Arrays.asList(new Gson().fromJson(results, Movie[].class));
-                        movies.setValue(movieList);
+                        liveData.setValue(movieList);
+                        isFailed.set(false);
                     }
 
                     @Override
                     public void onFailure(Call<JsonObject> call, Throwable t) {
-                        movies.setValue(null);
+                        isFailed.set(true);
                     }
                 });
-        return movies;
     }
 
     public LiveData<List<Movie>> getStoredMovie() {

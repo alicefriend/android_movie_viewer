@@ -22,37 +22,28 @@ public class MainViewModel extends AndroidViewModel {
 
     private static final String TAG = MainViewModel.class.getSimpleName();
 
-    //private AppDatabase appDatabase;
-
     private LiveData<List<Movie>> storedMovies;
-    private MutableLiveData<List<Movie>> popularMovies;
-    private MutableLiveData<List<Movie>> topRateMovies;
-    private ObservableField<Boolean> hasNetworkError = new ObservableField<>(false);
+    private MutableLiveData<List<Movie>> popularMovies = new MutableLiveData<>();
+    private MutableLiveData<List<Movie>> topRatedMovies = new MutableLiveData<>();
+    private ObservableField<Boolean> loadPopularFailed = new ObservableField<>(false);
+    private ObservableField<Boolean> loadTopRatedFailed = new ObservableField<>(false);
 
     private MainRepository repository;
 
     public MainViewModel(Application application) {
         super(application);
-
-
         RestService restService = RestServiceFactory.getInstance();
         MovieDao movieDao = AppDatabase.getDatabase(getApplication()).appDomainModel();
         repository = new MainRepository(restService, movieDao);
-        init();
+
+        initModelData();
     }
 
 
-    public void init() {
-        // Load data
-        popularMovies = repository.getMovies("popular");
-        topRateMovies = repository.getMovies("top_rated");
+    public void initModelData() {
+        repository.getMovies("popular", popularMovies, loadPopularFailed);
+        repository.getMovies("top_rated", topRatedMovies, loadTopRatedFailed);
         storedMovies = repository.getStoredMovie();
-
-        /*
-        if (popularMovies.getValue() == null || topRateMovies.getValue() == null) {
-            hasNetworkError.set(true);
-        }
-        */
     }
 
     public LiveData<List<Movie>> getStoredMovies() {
@@ -63,12 +54,15 @@ public class MainViewModel extends AndroidViewModel {
         return popularMovies;
     }
 
-    public MutableLiveData<List<Movie>> getTopRateMovies() {
-        return topRateMovies;
+    public MutableLiveData<List<Movie>> getTopRatedMovies() {
+        return topRatedMovies;
     }
 
-    public ObservableField<Boolean> getHasNetworkError() {
-        return hasNetworkError;
+    public ObservableField<Boolean> getLoadPopularFailed() {
+        return loadPopularFailed;
     }
 
+    public ObservableField<Boolean> getLoadTopRatedFailed() {
+        return loadTopRatedFailed;
+    }
 }
