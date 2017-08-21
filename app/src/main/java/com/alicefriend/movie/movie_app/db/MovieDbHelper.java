@@ -4,19 +4,19 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.alicefriend.movie.movie_app.db.DbContract.MovieEntry;
+import com.alicefriend.movie.movie_app.db.MovieDbContract.MovieEntry;
 
 /**
  * Created by choi on 2017. 8. 21..
  */
 
-public class DbHelper extends SQLiteOpenHelper{
+public class MovieDbHelper extends SQLiteOpenHelper{
 
     private static final String DATABASE_NAME = "movies.db";
 
     private static final int DATABASE_VERSION = 10;
 
-    public DbHelper(Context context) {
+    public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

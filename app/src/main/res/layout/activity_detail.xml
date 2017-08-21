@@ -115,16 +115,31 @@
                         tools:text="8.8" />
 
                     <Button
-                        android:id="@+id/favorite_button"
+                        android:id="@+id/add_favorite_btn"
                         android:layout_width="97dp"
                         android:layout_height="49dp"
                         android:background="@color/colorAccent"
-                        android:text="@string/btn_favorite_label"
+                        android:text="@string/btn_add_favorite_label"
                         android:textColor="@color/white"
                         android:textSize="@dimen/small_text_size"
                         app:layout_constraintBottom_toBottomOf="@+id/thumnail"
                         android:layout_marginBottom="0dp"
                         android:layout_marginLeft="0dp"
+                        android:visibility="@{viewModel.isFavorite ? View.GONE : View.VISIBLE}"
+                        app:layout_constraintLeft_toLeftOf="@+id/label_rating" />
+
+                    <Button
+                        android:id="@+id/delete_favorite_btn"
+                        android:layout_width="97dp"
+                        android:layout_height="49dp"
+                        android:background="@color/colorPrimaryDark"
+                        android:text="@string/btn_delete_favorite_label"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/small_text_size"
+                        app:layout_constraintBottom_toBottomOf="@+id/thumnail"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:visibility="@{viewModel.isFavorite ? View.VISIBLE : View.GONE}"
                         app:layout_constraintLeft_toLeftOf="@+id/label_rating" />
 
 

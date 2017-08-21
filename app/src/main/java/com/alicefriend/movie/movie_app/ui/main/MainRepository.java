@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableField;
 
-import com.alicefriend.movie.movie_app.db.DbDao;
+import com.alicefriend.movie.movie_app.db.MovieDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.network.RestService;
 import com.google.gson.Gson;
@@ -25,9 +25,9 @@ import retrofit2.Response;
 public class MainRepository {
 
     private final RestService service;
-    private final DbDao dao;
+    private final MovieDao dao;
 
-    public MainRepository(RestService service, DbDao dao) {
+    public MainRepository(RestService service, MovieDao dao) {
         this.service = service;
         this.dao = dao;
     }

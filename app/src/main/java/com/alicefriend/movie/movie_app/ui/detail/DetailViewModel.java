@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableField;
 import android.os.AsyncTask;
 
-import com.alicefriend.movie.movie_app.db.DbDao;
+import com.alicefriend.movie.movie_app.db.MovieDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.domain.Review;
 import com.alicefriend.movie.movie_app.domain.Trailer;
@@ -29,13 +29,16 @@ public class DetailViewModel extends AndroidViewModel {
     private MutableLiveData<List<Trailer>> trailersLiveData = new MutableLiveData<>();
     private ObservableField<Boolean> loadTrailersFailed = new ObservableField<>(false);
     private ObservableField<Boolean> loadReviewsFailed = new ObservableField<>(false);
+    private ObservableField<Boolean> isFavorite = new ObservableField<>(false);
 
     public DetailViewModel(Application application, Movie movie) {
         super(application);
         this.movie = movie;
         this.application = application;
         repository = new DetailRepository(movie);
-        loadData();
+        repository.reviews(reviewsLiveData, loadReviewsFailed);
+        repository.trailers(trailersLiveData, loadTrailersFailed);
+        isFavorite = MovieDao.getInstance(application).isFavorite(movie);
     }
 
     public void loadData() {
@@ -43,21 +46,27 @@ public class DetailViewModel extends AndroidViewModel {
         repository.trailers(trailersLiveData, loadTrailersFailed);
     }
 
-    public void insertMovie(final Movie movie) {
-        new addAsyncTask(DbDao.getInstance(application)).execute(movie);
+    public void addFavorite() {
+        isFavorite.set(true);
+        new addAsyncTask(MovieDao.getInstance(application)).execute(movie);
+    }
+
+    public void deleteFavorite() {
+        isFavorite.set(false);
+        MovieDao.getInstance(application).deleteFavorite(movie);
     }
 
     private static class addAsyncTask extends AsyncTask<Movie, Void, Void> {
 
-        private DbDao dao;
+        private MovieDao dao;
 
-        addAsyncTask(DbDao dao) {
+        addAsyncTask(MovieDao dao) {
             this.dao = dao;
         }
 
         @Override
         protected Void doInBackground(final Movie... params) {
-            dao.insertMovie(params[0]);
+            dao.addFavorite(params[0]);
             return null;
         }
     }
@@ -76,5 +85,9 @@ public class DetailViewModel extends AndroidViewModel {
 
     public ObservableField<Boolean> getLoadReviewsFailed() {
         return loadReviewsFailed;
+    }
+
+    public ObservableField<Boolean> getIsFavorite() {
+        return isFavorite;
     }
 }

@@ -37,6 +37,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.main.MainActivity" />
         </activity>
+        <provider
+            android:name="com.alicefriend.movie.movie_app.db.MovieContentProvider"
+            android:authorities="com.alicefriend.movie.movie_app"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -20,7 +20,6 @@ import android.view.MenuItem;
 
 import com.alicefriend.movie.movie_app.R;
 import com.alicefriend.movie.movie_app.databinding.ActivityDetailBinding;
-import com.alicefriend.movie.movie_app.db.DbDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.util.Utils;
 
@@ -37,8 +36,6 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
     private Movie movie;
     private ActivityDetailBinding binding;
     private DetailViewModel viewModel;
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,13 +61,20 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         initReviewView();
 
         Utils.posterImageLoad(binding.thumnail, movie);
-        binding.favoriteButton.setOnClickListener(view -> {
-            viewModel.insertMovie(movie);
+        binding.addFavoriteBtn.setOnClickListener(view -> {
+            viewModel.addFavorite();
             Snackbar snackbar = Snackbar.make(findViewById(R.id.detailCoordinatorLayout),
                     R.string.favorite_added, Snackbar.LENGTH_SHORT);
             snackbar.setAction(R.string.undo_string, v -> {
-                DbDao.getInstance(this).deleteMovie(movie);
+                viewModel.deleteFavorite();
             });
+            snackbar.show();
+        });
+
+        binding.deleteFavoriteBtn.setOnClickListener(view -> {
+            viewModel.deleteFavorite();
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.detailCoordinatorLayout),
+                    R.string.favorite_deleted, Snackbar.LENGTH_SHORT);
             snackbar.show();
         });
     }

@@ -115,7 +115,7 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-    <string name="btn_favorite_label">Add</string>
+    <string name="btn_add_favorite_label">Add</string>
     <string name="label_overview">Overview</string>
     <string name="label_trailers">Trailers</string>
     <string name="label_reviews">Reviews</string>
@@ -125,4 +125,6 @@
     <string name="favorite_added">Saved as Favorite</string>
     <string name="undo_string">Undo</string>
     <string name="not_yet_implemented">Not yet implemented</string>
+    <string name="favorite_deleted">Deleted Successfully</string>
+    <string name="btn_delete_favorite_label">Delete</string>
 </resources>
