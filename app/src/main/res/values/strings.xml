@@ -122,4 +122,7 @@
     <string name="error_msg_load_reviews">Error occured, Check network.</string>
     <string name="error_msg_load_trailers">Error occured, Check network.</string>
     <string name="action_refresh">refresh</string>
+    <string name="favorite_added">Successfully saved the favorite</string>
+    <string name="undo_string">Undo</string>
+    <string name="not_yet_implemented">Not yet implemented</string>
 </resources>

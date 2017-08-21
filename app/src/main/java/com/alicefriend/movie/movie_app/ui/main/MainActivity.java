@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,10 +24,6 @@ import com.alicefriend.movie.movie_app.databinding.ActivityMainBinding;
 import com.alicefriend.movie.movie_app.ui.settings.SettingsActivity;
 import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
-import com.jakewharton.rxbinding2.view.RxView;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements LifecycleRegistryOwner {
 
@@ -62,10 +59,14 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         mainViewModel.getPopularMovies().observe(this, movies -> mPopularAdapter.setMovies(movies));
         mainViewModel.getTopRatedMovies().observe(this, movies -> mTopRateAdapter.setMovies(movies));
 
-        RxView.clicks(binding.refresh)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
-                .subscribe(ignored -> mainViewModel.initModelData());
+        binding.fab.setOnClickListener(v -> {
+            Snackbar.make(findViewById(R.id.mainCoordinatorLayout),
+                    R.string.not_yet_implemented, Snackbar.LENGTH_SHORT).show();
+        });
+
+        binding.refresh.setOnClickListener(v -> {
+            mainViewModel.initModelData();
+        });
     }
 
     @Override
@@ -88,11 +89,6 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public LifecycleRegistry getLifecycle() {
-        return mRegistry;
     }
 
     private void initRecyclerView() {
@@ -131,9 +127,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     }
 
     private void initAppBar() {
-        final Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        AppBarLayout mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        AppBarLayout mAppBarLayout = findViewById(R.id.app_bar);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -162,6 +158,11 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     private void showOption(int id) {
         MenuItem item = menu.findItem(id);
         item.setVisible(true);
+    }
+
+    @Override
+    public LifecycleRegistry getLifecycle() {
+        return mRegistry;
     }
 
 }
