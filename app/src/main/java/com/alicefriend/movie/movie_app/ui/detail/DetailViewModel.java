@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableField;
 import android.os.AsyncTask;
 
-import com.alicefriend.movie.movie_app.db.AppDatabase;
+import com.alicefriend.movie.movie_app.db.DbDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.domain.Review;
 import com.alicefriend.movie.movie_app.domain.Trailer;
@@ -44,20 +44,20 @@ public class DetailViewModel extends AndroidViewModel {
     }
 
     public void insertMovie(final Movie movie) {
-        new addAsyncTask(AppDatabase.getDatabase(application)).execute(movie);
+        new addAsyncTask(DbDao.getInstance(application)).execute(movie);
     }
 
     private static class addAsyncTask extends AsyncTask<Movie, Void, Void> {
 
-        private AppDatabase db;
+        private DbDao dao;
 
-        addAsyncTask(AppDatabase appDatabase) {
-            db = appDatabase;
+        addAsyncTask(DbDao dao) {
+            this.dao = dao;
         }
 
         @Override
         protected Void doInBackground(final Movie... params) {
-            db.appDomainModel().insertMovie(params[0]);
+            dao.insertMovie(params[0]);
             return null;
         }
     }

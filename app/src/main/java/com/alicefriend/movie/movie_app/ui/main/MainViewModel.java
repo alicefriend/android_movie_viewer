@@ -6,8 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableField;
 
-import com.alicefriend.movie.movie_app.db.AppDatabase;
-import com.alicefriend.movie.movie_app.db.MovieDao;
+import com.alicefriend.movie.movie_app.db.DbDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.network.RestService;
 import com.alicefriend.movie.movie_app.network.RestServiceFactory;
@@ -33,9 +32,7 @@ public class MainViewModel extends AndroidViewModel {
     public MainViewModel(Application application) {
         super(application);
         RestService restService = RestServiceFactory.getInstance();
-        MovieDao movieDao = AppDatabase.getDatabase(getApplication()).appDomainModel();
-        repository = new MainRepository(restService, movieDao);
-
+        repository = new MainRepository(restService, DbDao.getInstance(application));
         initModelData();
     }
 

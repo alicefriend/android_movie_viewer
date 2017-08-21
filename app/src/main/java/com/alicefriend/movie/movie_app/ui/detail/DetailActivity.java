@@ -17,10 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.alicefriend.movie.movie_app.R;
 import com.alicefriend.movie.movie_app.databinding.ActivityDetailBinding;
+import com.alicefriend.movie.movie_app.db.DbDao;
 import com.alicefriend.movie.movie_app.domain.Movie;
 import com.alicefriend.movie.movie_app.util.Utils;
 
@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
             Snackbar snackbar = Snackbar.make(findViewById(R.id.detailCoordinatorLayout),
                     R.string.favorite_added, Snackbar.LENGTH_SHORT);
             snackbar.setAction(R.string.undo_string, v -> {
-                Toast.makeText(this, "Not yet implemented!", Toast.LENGTH_SHORT).show();
+                DbDao.getInstance(this).deleteMovie(movie);
             });
             snackbar.show();
         });

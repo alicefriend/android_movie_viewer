@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
         initRecyclerView();
         initPreferenceSetting();
 
-        mainViewModel.getStoredMovies().observe(this, movies -> mFavoriteAdapter.setMovies(movies));
         mainViewModel.getPopularMovies().observe(this, movies -> mPopularAdapter.setMovies(movies));
         mainViewModel.getTopRatedMovies().observe(this, movies -> mTopRateAdapter.setMovies(movies));
+        mainViewModel.getStoredMovies().observe(this, movies -> mFavoriteAdapter.setMovies(movies));
 
         binding.fab.setOnClickListener(v -> {
             Snackbar.make(findViewById(R.id.mainCoordinatorLayout),
