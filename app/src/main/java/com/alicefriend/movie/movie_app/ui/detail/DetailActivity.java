@@ -63,8 +63,6 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
         initTrailerView();
         initReviewView();
 
-
-
         Utils.posterImageLoad(binding.thumnail, movie);
         binding.favoriteButton.setOnClickListener(view -> {
             viewModel.insertMovie(movie);
@@ -74,7 +72,6 @@ public class DetailActivity extends AppCompatActivity implements LifecycleRegist
                 Toast.makeText(this, "Not yet implemented!", Toast.LENGTH_SHORT).show();
             });
             snackbar.show();
-
         });
     }
 
